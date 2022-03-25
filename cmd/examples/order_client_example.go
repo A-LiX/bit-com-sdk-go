@@ -26,12 +26,12 @@ func PlaceNewOrderExample() string {
 		respJson, jsonErr := model.ToJson(resp.Data)
 		order_id := gjson.Get(respJson, "order_id")
 
-		return order_id.Str
 		if jsonErr != nil {
 			applogger.Error("Marshal response error: %s", jsonErr)
 		} else {
 			applogger.Info("Place new order: \n%s", pretty.Pretty([]byte(respJson)))
 		}
+		return order_id.Str
 	}
 	ret_str := "null"
 	return ret_str
