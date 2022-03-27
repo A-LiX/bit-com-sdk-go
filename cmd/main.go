@@ -43,20 +43,29 @@ func main() {
 	//examples.ResetMmpStateExample()
 
 	// order client
-
 	order_id := examples.PlaceNewOrderExample()
 	//examples.PlaceNewBatchOrderExample()
 	//order_id := "315233500"
-	fmt.Println("ordrid-----------------------------", order_id)
+	//fmt.Println("ordrid-----------------------------", order_id)
 
 	t1 := time.Now() //获取本地现在时间
-	examples.CancelOrderExample(order_id)
-	go examples.GetOrdersExample()
-	go hello()
-	t2 := time.Now()
-	d := t2.Sub(t1)
-	fmt.Println(d)
+	go examples.CancelOrderExample(order_id, t1)
+	cancel_status := false
 
+	go func() {
+		for {
+			cancel_status = examples.GetOrdersExample(order_id)
+			if cancel_status == true {
+				t3 := time.Now()
+				d2 := t3.Sub(t1)
+				fmt.Println("t3-t1=", d2)
+				break
+			} else {
+				fmt.Println(order_id, " cancel operation uncomplete")
+			}
+		}
+	}()
+	time.Sleep(time.Second * 5)
 	//examples.AmendOrderExample()
 	//examples.AmendBatchOrdersExample()
 	//examples.ClosePositionsExample()

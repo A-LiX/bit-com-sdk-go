@@ -1,6 +1,11 @@
 package examples
 
 import (
+	"encoding/json"
+	"fmt"
+	"strings"
+	"time"
+
 	"github.com/bitcom-exchange/bitcom-go-api/config"
 	"github.com/bitcom-exchange/bitcom-go-api/logging/applogger"
 	"github.com/bitcom-exchange/bitcom-go-api/pkg/client/restclient"
@@ -8,6 +13,40 @@ import (
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/pretty"
 )
+
+type Jinfo struct {
+	order_id         string
+	created_at       string
+	updated_at       string
+	user_id          string
+	instrument_id    string
+	order_type       string
+	side             string
+	price            string
+	qty              string
+	time_in_force    string
+	avg_price        string
+	filled_qty       string
+	status           string
+	fee              string
+	is_liquidation   string
+	auto_price       string
+	auto_price_type  string
+	pnl              string
+	cash_flow        string
+	initial_margin   string
+	taker_fee_rate   string
+	maker_fee_rate   string
+	label            string
+	stop_order_id    string
+	stop_price       string
+	reduce_only      string
+	post_only        string
+	reject_post_only string
+	mmp              string
+	source           string
+	hidden           string
+}
 
 func PlaceNewOrderExample() string {
 	orderClient := new(restclient.OrderClient).Init(config.User1Host, config.User1AccessKey, config.User1SecretKey)
@@ -29,7 +68,9 @@ func PlaceNewOrderExample() string {
 		if jsonErr != nil {
 			applogger.Error("Marshal response error: %s", jsonErr)
 		} else {
-			applogger.Info("Place new order: \n%s", pretty.Pretty([]byte(respJson)))
+			if jsonErr != nil {
+				applogger.Info("Place new order: \n%s", pretty.Pretty([]byte(respJson)))
+			}
 		}
 		return order_id.Str
 	}
@@ -71,11 +112,12 @@ func PlaceNewBatchOrderExample() {
 			applogger.Error("Marshal response error: %s", jsonErr)
 		} else {
 			applogger.Info("Place batch new orders: \n%s", pretty.Pretty([]byte(respJson)))
+
 		}
 	}
 }
 
-func CancelOrderExample(order_id string) {
+func CancelOrderExample(order_id string, t1 time.Time) {
 	orderClient := new(restclient.OrderClient).Init(config.User1Host, config.User1AccessKey, config.User1SecretKey)
 
 	paramMap := make(map[string]interface{})
@@ -85,12 +127,17 @@ func CancelOrderExample(order_id string) {
 	if err != nil {
 		applogger.Error("Cancel orders error: %s", err)
 	} else {
-		respJson, jsonErr := model.ToJson(resp.Data)
+		t2 := time.Now()
+		d1 := t2.Sub(t1)
+		fmt.Println("t2-t1=", d1)
+
+		_, jsonErr := model.ToJson(resp.Data)
 		if jsonErr != nil {
 			applogger.Error("Marshal response error: %s", jsonErr)
-		} else {
-			applogger.Info("Cancel orders: \n%s", pretty.Pretty([]byte(respJson)))
 		}
+		//  else {
+		// 	//applogger.Info("Cancel orders: \n%s", pretty.Pretty([]byte(respJson)))
+		// }
 	}
 }
 
@@ -187,7 +234,7 @@ func GetOpenOrdersExample() {
 	}
 }
 
-func GetOrdersExample() {
+func GetOrdersExample(order_id string) bool {
 	orderClient := new(restclient.OrderClient).Init(config.User1Host, config.User1AccessKey, config.User1SecretKey)
 
 	paramMap := make(map[string]interface{})
@@ -203,9 +250,26 @@ func GetOrdersExample() {
 		if jsonErr != nil {
 			applogger.Error("Marshal response error: %s", jsonErr)
 		} else {
-			applogger.Info("Get orders: \n%s", pretty.Pretty([]byte(respJson)))
+			//var jArray []Jinfo
+			ris := [](map[string]interface{}){}
+			err := json.Unmarshal([]byte(respJson), &ris)
+			if err != nil {
+				fmt.Println(err)
+			}
+			//applogger.Info("Get  orders: \n%s", pretty.Pretty([]byte(respJson)))
+			//fmt.Println("1:", order_id, "   2:", ris[0]["order_id"])
+			if strings.Compare(order_id, ris[0]["order_id"].(string)) == 0 {
+				if strings.Compare("cancelled", ris[0]["status"].(string)) == 0 {
+					return true
+				} else {
+					return false
+				}
+			} else {
+				return false
+			}
 		}
 	}
+	return false
 }
 
 func GetStopOrdersExample() {
