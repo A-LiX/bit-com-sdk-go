@@ -2,14 +2,9 @@ package main
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/bitcom-exchange/bitcom-go-api/cmd/examples"
 )
-
-func hello() {
-	fmt.Println("helllllllllllllllllo")
-}
 
 func main() {
 	// system client
@@ -46,26 +41,27 @@ func main() {
 	order_id := examples.PlaceNewOrderExample()
 	//examples.PlaceNewBatchOrderExample()
 	//order_id := "315233500"
-	//fmt.Println("ordrid-----------------------------", order_id)
+	fmt.Println("ordrid-----------------------------", order_id)
 
-	t1 := time.Now() //获取本地现在时间
-	go examples.CancelOrderExample(order_id, t1)
-	cancel_status := false
+	// t1 := time.Now() //获取本地现在时间
+	// go examples.CancelOrderExample(order_id, t1)
+	//cancel_status := false
 
-	go func() {
-		for {
-			cancel_status = examples.GetOrdersExample(order_id)
-			if cancel_status == true {
-				t3 := time.Now()
-				d2 := t3.Sub(t1)
-				fmt.Println("t3-t1=", d2)
-				break
-			} else {
-				fmt.Println(order_id, " cancel operation uncomplete")
-			}
-		}
-	}()
-	time.Sleep(time.Second * 5)
+	// go func() {
+	// 	for {
+	//order_id := "123456789"
+	//_ = examples.GetOrdersExample(order_id)
+	// 		if cancel_status == true {
+	// 			t3 := time.Now()
+	// 			d2 := t3.Sub(t1)
+	// 			fmt.Println("t3-t1=", d2)
+	// 			break
+	// 		} else {
+	// 			fmt.Println(order_id, " cancel operation uncomplete")
+	// 		}
+	// 	}
+	// }()
+	// time.Sleep(time.Second * 5)
 	//examples.AmendOrderExample()
 	//examples.AmendBatchOrdersExample()
 	//examples.ClosePositionsExample()
@@ -83,5 +79,5 @@ func main() {
 
 	// WebSocket
 	//examples.PublicSubscribeExample()
-	//examples.PrivateSubscribeExample()
+	examples.PrivateSubscribeExample()
 }

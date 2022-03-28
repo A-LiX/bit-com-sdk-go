@@ -131,12 +131,12 @@ func CancelOrderExample(order_id string, t1 time.Time) {
 		d1 := t2.Sub(t1)
 		fmt.Println("t2-t1=", d1)
 
-		_, jsonErr := model.ToJson(resp.Data)
+		respJson, jsonErr := model.ToJson(resp.Data)
 		if jsonErr != nil {
 			applogger.Error("Marshal response error: %s", jsonErr)
 		}
 		//  else {
-		// 	//applogger.Info("Cancel orders: \n%s", pretty.Pretty([]byte(respJson)))
+		applogger.Info("Cancel orders: \n%s", pretty.Pretty([]byte(respJson)))
 		// }
 	}
 }
@@ -256,7 +256,7 @@ func GetOrdersExample(order_id string) bool {
 			if err != nil {
 				fmt.Println(err)
 			}
-			//applogger.Info("Get  orders: \n%s", pretty.Pretty([]byte(respJson)))
+			applogger.Info("Get  orders: \n%s", pretty.Pretty([]byte(respJson)))
 			//fmt.Println("1:", order_id, "   2:", ris[0]["order_id"])
 			if strings.Compare(order_id, ris[0]["order_id"].(string)) == 0 {
 				if strings.Compare("cancelled", ris[0]["status"].(string)) == 0 {
