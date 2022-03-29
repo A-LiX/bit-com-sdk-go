@@ -117,7 +117,7 @@ func PlaceNewBatchOrderExample() {
 	}
 }
 
-func CancelOrderExample(order_id string, t1 time.Time) {
+func CancelOrderExample(order_id string, t1 *time.Time) {
 	orderClient := new(restclient.OrderClient).Init(config.User1Host, config.User1AccessKey, config.User1SecretKey)
 
 	paramMap := make(map[string]interface{})
@@ -128,16 +128,14 @@ func CancelOrderExample(order_id string, t1 time.Time) {
 		applogger.Error("Cancel orders error: %s", err)
 	} else {
 		t2 := time.Now()
-		d1 := t2.Sub(t1)
-		fmt.Println("t2-t1=", d1)
+		d1 := t2.Sub(*t1)
+		fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>t2-t1=", d1)
 
 		respJson, jsonErr := model.ToJson(resp.Data)
 		if jsonErr != nil {
 			applogger.Error("Marshal response error: %s", jsonErr)
 		}
-		//  else {
 		applogger.Info("Cancel orders: \n%s", pretty.Pretty([]byte(respJson)))
-		// }
 	}
 }
 

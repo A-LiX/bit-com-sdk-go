@@ -2,6 +2,7 @@ package examples
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/bitcom-exchange/bitcom-go-api/config"
 	"github.com/bitcom-exchange/bitcom-go-api/logging/applogger"
@@ -10,6 +11,8 @@ import (
 	"github.com/bitcom-exchange/bitcom-go-api/pkg/model"
 	"github.com/bitcom-exchange/bitcom-go-api/pkg/model/ws"
 )
+
+var t_cancel *time.Time
 
 func responseHandlerExample(resp interface{}) {
 	switch t := resp.(type) {
@@ -102,12 +105,18 @@ func responseHandlerExample(resp interface{}) {
 		if jsonErr != nil {
 			applogger.Error("Marshal response error: %s", jsonErr)
 		}
+		t3 := time.Now()
+		d2 := t3.Sub(*t_cancel)
+		fmt.Printf("t3: %v\n", t3)
+		fmt.Println("t_cancel:", *t_cancel)
+		fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>t3-t1=", d2)
 		applogger.Info("Receive order response: %s", respJson)
 	case ws.UserTradeResponse:
 		respJson, jsonErr := model.ToJson(resp)
 		if jsonErr != nil {
 			applogger.Error("Marshal response error: %s", jsonErr)
 		}
+
 		applogger.Info("Receive user trades response: %s", respJson)
 	default:
 		fmt.Printf("Unexpected type %T\n", t)
@@ -132,7 +141,7 @@ func PublicSubscribeExample() {
 	paramMap := map[string]interface{}{
 		"type":        "subscribe",
 		"channels":    []string{"ticker"},
-		"instruments": []string{},
+		"instruments": []string{"BTC-PERPETUAL"},
 		"interval":    "100ms",
 	}
 
@@ -160,9 +169,7 @@ func PublicSubscribeExample() {
 	applogger.Info("Client closed")
 }
 
-func PrivateSubscribeExample() {
-	//token := getWsAuthToken()
-
+func PrivateSubscribeExample(order_id string, t1 *time.Time) {
 	client := new(wsclient.PrivateWebsocketClient).Init(config.WsHost, getWsAuthToken, 60)
 
 	paramMap := map[string]interface{}{
@@ -173,7 +180,8 @@ func PrivateSubscribeExample() {
 		"categories":  []string{"future"},
 		"interval":    "100ms",
 	}
-
+	client.Connect(true)
+	t_cancel = t1
 	client.SetHandler(
 		func() {
 			client.Subscribe(paramMap)

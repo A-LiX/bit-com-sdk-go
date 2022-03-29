@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/bitcom-exchange/bitcom-go-api/cmd/examples"
 )
@@ -37,14 +38,24 @@ func main() {
 	//examples.UpdateMmpConfigExample()
 	//examples.ResetMmpStateExample()
 
-	// order client
 	order_id := examples.PlaceNewOrderExample()
+
+	var t_temp time.Time
+	// order client
+	go examples.PrivateSubscribeExample(order_id, &t_temp)
+
+	time.Sleep(time.Second * 10)
+
 	//examples.PlaceNewBatchOrderExample()
 	//order_id := "315233500"
-	fmt.Println("ordrid-----------------------------", order_id)
+	//fmt.Println("ordrid-----------------------------", order_id)
 
-	// t1 := time.Now() //获取本地现在时间
-	// go examples.CancelOrderExample(order_id, t1)
+	t1 := time.Now() //获取本地现在时间
+	t_temp = t1
+	fmt.Printf("t_temp: %v\n", t_temp)
+	examples.CancelOrderExample(order_id, &t_temp)
+	time.Sleep(time.Second * 20)
+
 	//cancel_status := false
 
 	// go func() {
@@ -61,7 +72,6 @@ func main() {
 	// 		}
 	// 	}
 	// }()
-	// time.Sleep(time.Second * 5)
 	//examples.AmendOrderExample()
 	//examples.AmendBatchOrdersExample()
 	//examples.ClosePositionsExample()
@@ -79,5 +89,4 @@ func main() {
 
 	// WebSocket
 	//examples.PublicSubscribeExample()
-	examples.PrivateSubscribeExample()
 }
