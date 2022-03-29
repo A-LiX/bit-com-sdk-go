@@ -178,7 +178,7 @@ func PrivateSubscribeExample(order_id string, t1 *time.Time) {
 		"channels":    []string{"order"},
 		"currencies":  []string{"BTC"},
 		"categories":  []string{"future"},
-		"interval":    "10ms",
+		"interval":    "100ms",
 	}
 	client.Connect(true)
 	t_cancel = t1
