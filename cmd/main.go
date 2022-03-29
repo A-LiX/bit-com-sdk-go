@@ -39,6 +39,7 @@ func main() {
 	//examples.ResetMmpStateExample()
 
 	order_id := examples.PlaceNewOrderExample()
+	fmt.Println("ordrid==================================================================", order_id)
 
 	var t_temp time.Time
 	// order client
@@ -48,11 +49,9 @@ func main() {
 
 	//examples.PlaceNewBatchOrderExample()
 	//order_id := "315233500"
-	//fmt.Println("ordrid-----------------------------", order_id)
 
 	t1 := time.Now() //获取本地现在时间
 	t_temp = t1
-	fmt.Printf("t_temp: %v\n", t_temp)
 	examples.CancelOrderExample(order_id, &t_temp)
 	time.Sleep(time.Second * 20)
 

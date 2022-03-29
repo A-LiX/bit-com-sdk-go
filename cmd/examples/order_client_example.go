@@ -129,7 +129,7 @@ func CancelOrderExample(order_id string, t1 *time.Time) {
 	} else {
 		t2 := time.Now()
 		d1 := t2.Sub(*t1)
-		fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>t2-t1=", d1)
+		fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>t2-t1=", d1)
 
 		respJson, jsonErr := model.ToJson(resp.Data)
 		if jsonErr != nil {

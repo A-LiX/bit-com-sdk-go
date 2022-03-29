@@ -107,9 +107,7 @@ func responseHandlerExample(resp interface{}) {
 		}
 		t3 := time.Now()
 		d2 := t3.Sub(*t_cancel)
-		fmt.Printf("t3: %v\n", t3)
-		fmt.Println("t_cancel:", *t_cancel)
-		fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>t3-t1=", d2)
+		fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>t3-t1=", d2)
 		applogger.Info("Receive order response: %s", respJson)
 	case ws.UserTradeResponse:
 		respJson, jsonErr := model.ToJson(resp)
