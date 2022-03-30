@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"runtime"
 	"time"
 
@@ -42,12 +43,22 @@ func main() {
 	fmt.Println("cpuNum=", cpuNum)
 	runtime.GOMAXPROCS(cpuNum)
 
-	var t_temp time.Time
+	file12, err := os.Create("t1_t2.csv")
+	if err != nil {
+		fmt.Printf("err: %v\n", err)
+	}
+	file13, err := os.Create("t1_t3.csv")
+	if err != nil {
+		fmt.Printf("err_file13: %v\n", err)
+	}
+	defer file12.Close()
+	defer file13.Close()
 
+	var t_temp time.Time
 	var order_id *string
 	oid := "000000000"
 	order_id = &oid
-	go examples.PrivateSubscribeExample(order_id, &t_temp)
+	go examples.PrivateSubscribeExample(order_id, &t_temp, file13)
 	time.Sleep(time.Second * 10)
 
 	for {
@@ -55,7 +66,7 @@ func main() {
 		fmt.Println("place_order_id:", *order_id)
 		t1 := time.Now() //获取本地现在时间
 		t_temp = t1
-		examples.CancelOrderExample(order_id, t_temp)
+		examples.CancelOrderExample(order_id, t_temp, file12)
 		time.Sleep(time.Second * 10)
 
 		fmt.Println("==================================================================================================")

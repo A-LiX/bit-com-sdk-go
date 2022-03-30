@@ -3,6 +3,7 @@ package examples
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 	"strings"
 	"time"
 
@@ -117,7 +118,7 @@ func PlaceNewBatchOrderExample() {
 	}
 }
 
-func CancelOrderExample(order_id *string, t1 time.Time) {
+func CancelOrderExample(order_id *string, t1 time.Time, file12 *os.File) {
 	orderClient := new(restclient.OrderClient).Init(config.User1Host, config.User1AccessKey, config.User1SecretKey)
 
 	paramMap := make(map[string]interface{})
@@ -129,8 +130,16 @@ func CancelOrderExample(order_id *string, t1 time.Time) {
 	} else {
 		t2 := time.Now()
 		d1 := t2.Sub(t1)
-		fmt.Printf("t1: %v\n", t1)
 		fmt.Println("t2-t1=", d1)
+		str1 := []byte(*order_id)
+
+		str2 := []byte(",")
+		str3 := []byte(d1.String())
+		str4 := []byte("\n")
+		str1 = append(str1, str2...)
+		str1 = append(str1, str3...)
+		str1 = append(str1, str4...)
+		_, _ = file12.Write([]byte(str1))
 
 		respJson, jsonErr := model.ToJson(resp.Data)
 		if jsonErr != nil {

@@ -1,8 +1,8 @@
 package config
 
-var User1Host = "https://betaapi.bitexch.dev"
-var User1Uid = "441103"
-var User1AccessKey = "ak-7a643fac-8b6e-4b89-ae63-e9598838fac0"
-var User1SecretKey = "oG4rDXQ2PcespDV7zSzLQhwjz1XsKlAlCj6emZBF6VdpYNvXYN3XFf0x3J4ZC4Id"
+var User1Host = "https://spot-api.bit.com"
+var User1Uid = "1286889"
+var User1AccessKey = "ak-cbdc4cd4-dd27-4e4f-99f0-3260adbeeca2"
+var User1SecretKey = "GQrx2l78xAirkT0RF9zkreATNNjSb3ufBecVAw2rWGotWpCAKHVPtxHDTT99dI2t"
 
-var WsHost = "wss://betaws.bitexch.dev"
+var WsHost = "wss://spot-ws.bit.com"

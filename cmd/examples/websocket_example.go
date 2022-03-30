@@ -2,6 +2,7 @@ package examples
 
 import (
 	"fmt"
+	"os"
 	"strings"
 	"time"
 
@@ -16,6 +17,7 @@ import (
 
 var t_cancel *time.Time
 var oid *string
+var f13 *os.File
 
 func responseHandlerExample(resp interface{}) {
 	switch t := resp.(type) {
@@ -119,8 +121,16 @@ func responseHandlerExample(resp interface{}) {
 					fmt.Println("cancel_order_id:", data.Array()[0].Map()["order_id"])
 					t3 := time.Now()
 					d2 := t3.Sub(*t_cancel)
-					fmt.Printf("t_cancel: %v\n", t_cancel)
 					fmt.Println("t3-t1=", d2)
+
+					str1 := []byte(*oid)
+					str2 := []byte(",")
+					str3 := []byte(d2.String())
+					str4 := []byte("\n")
+					str1 = append(str1, str2...)
+					str1 = append(str1, str3...)
+					str1 = append(str1, str4...)
+					_, _ = f13.Write([]byte(str1))
 					break
 				}
 			}
@@ -192,7 +202,7 @@ func PublicSubscribeExample() {
 	applogger.Info("Client closed")
 }
 
-func PrivateSubscribeExample(order_id *string, t1 *time.Time) {
+func PrivateSubscribeExample(order_id *string, t1 *time.Time, file13 *os.File) {
 	client := new(wsclient.PrivateWebsocketClient).Init(config.WsHost, getWsAuthToken, 60)
 
 	paramMap := map[string]interface{}{
@@ -203,9 +213,10 @@ func PrivateSubscribeExample(order_id *string, t1 *time.Time) {
 		"categories":  []string{"future"},
 		"interval":    "100ms",
 	}
-	//client.Connect(true)
+	client.Connect(true)
 	t_cancel = t1
 	oid = order_id
+	f13 = file13
 	client.SetHandler(
 		func() {
 			client.Subscribe(paramMap)
