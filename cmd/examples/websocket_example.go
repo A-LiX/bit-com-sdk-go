@@ -2,6 +2,7 @@ package examples
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/bitcom-exchange/bitcom-go-api/config"
@@ -10,9 +11,11 @@ import (
 	"github.com/bitcom-exchange/bitcom-go-api/pkg/client/wsclient"
 	"github.com/bitcom-exchange/bitcom-go-api/pkg/model"
 	"github.com/bitcom-exchange/bitcom-go-api/pkg/model/ws"
+	"github.com/tidwall/gjson"
 )
 
 var t_cancel *time.Time
+var oid *string
 
 func responseHandlerExample(resp interface{}) {
 	switch t := resp.(type) {
@@ -105,10 +108,32 @@ func responseHandlerExample(resp interface{}) {
 		if jsonErr != nil {
 			applogger.Error("Marshal response error: %s", jsonErr)
 		}
-		t3 := time.Now()
-		d2 := t3.Sub(*t_cancel)
-		fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>t3-t1=", d2)
-		applogger.Info("Receive order response: %s", respJson)
+
+		data := gjson.Get(respJson, "data")
+		//
+
+		for _, r := range data.Array() {
+			if strings.Compare(r.Map()["order_id"].Str, *oid) == 0 {
+				if strings.Compare(r.Map()["status"].Str, "cancelled") == 0 {
+					fmt.Println("give_order_id:", *oid)
+					fmt.Println("cancel_order_id:", data.Array()[0].Map()["order_id"])
+					t3 := time.Now()
+					d2 := t3.Sub(*t_cancel)
+					fmt.Printf("t_cancel: %v\n", t_cancel)
+					fmt.Println("t3-t1=", d2)
+					break
+				}
+			}
+		}
+		// mp1 := make(map[string]interface{})
+
+		// ris := [](map[string]interface{}){}
+		// err := json.Unmarshal([]byte(mp1["data"].respJson), &ris)
+		// if err != nil {
+		// 	fmt.Println(err)
+		// }
+
+		//applogger.Info("Receive order response: %s", respJson)
 	case ws.UserTradeResponse:
 		respJson, jsonErr := model.ToJson(resp)
 		if jsonErr != nil {
@@ -167,7 +192,7 @@ func PublicSubscribeExample() {
 	applogger.Info("Client closed")
 }
 
-func PrivateSubscribeExample(order_id string, t1 *time.Time) {
+func PrivateSubscribeExample(order_id *string, t1 *time.Time) {
 	client := new(wsclient.PrivateWebsocketClient).Init(config.WsHost, getWsAuthToken, 60)
 
 	paramMap := map[string]interface{}{
@@ -178,8 +203,9 @@ func PrivateSubscribeExample(order_id string, t1 *time.Time) {
 		"categories":  []string{"future"},
 		"interval":    "100ms",
 	}
-	client.Connect(true)
+	//client.Connect(true)
 	t_cancel = t1
+	oid = order_id
 	client.SetHandler(
 		func() {
 			client.Subscribe(paramMap)

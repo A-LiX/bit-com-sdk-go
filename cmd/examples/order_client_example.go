@@ -55,7 +55,7 @@ func PlaceNewOrderExample() string {
 	paramMap["instrument_id"] = "BTC-PERPETUAL"
 	paramMap["qty"] = "1000"
 	paramMap["side"] = "sell"
-	paramMap["price"] = "109970.00"
+	paramMap["price"] = "55000.00"
 	paramMap["order_type"] = "limit"
 
 	resp, err := orderClient.NewOrder(paramMap)
@@ -117,19 +117,20 @@ func PlaceNewBatchOrderExample() {
 	}
 }
 
-func CancelOrderExample(order_id string, t1 *time.Time) {
+func CancelOrderExample(order_id *string, t1 time.Time) {
 	orderClient := new(restclient.OrderClient).Init(config.User1Host, config.User1AccessKey, config.User1SecretKey)
 
 	paramMap := make(map[string]interface{})
-	paramMap["order_id"] = order_id
+	paramMap["order_id"] = *order_id
 
 	resp, err := orderClient.CancelOrders(paramMap)
 	if err != nil {
 		applogger.Error("Cancel orders error: %s", err)
 	} else {
 		t2 := time.Now()
-		d1 := t2.Sub(*t1)
-		fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>t2-t1=", d1)
+		d1 := t2.Sub(t1)
+		fmt.Printf("t1: %v\n", t1)
+		fmt.Println("t2-t1=", d1)
 
 		respJson, jsonErr := model.ToJson(resp.Data)
 		if jsonErr != nil {

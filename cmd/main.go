@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"runtime"
 	"time"
 
 	"github.com/bitcom-exchange/bitcom-go-api/cmd/examples"
@@ -36,24 +37,29 @@ func main() {
 	//examples.GetCodConfigExample()
 	//examples.GetMmpStateExample()
 	//examples.UpdateMmpConfigExample()
-	//examples.ResetMmpStateExample()
 
-	order_id := examples.PlaceNewOrderExample()
-	fmt.Println("ordrid==================================================================", order_id)
+	cpuNum := runtime.NumCPU()
+	fmt.Println("cpuNum=", cpuNum)
+	runtime.GOMAXPROCS(cpuNum)
 
 	var t_temp time.Time
-	// order client
-	go examples.PrivateSubscribeExample(order_id, &t_temp)
 
+	var order_id *string
+	oid := "000000000"
+	order_id = &oid
+	go examples.PrivateSubscribeExample(order_id, &t_temp)
 	time.Sleep(time.Second * 10)
 
-	//examples.PlaceNewBatchOrderExample()
-	//order_id := "315233500"
+	for {
+		*order_id = examples.PlaceNewOrderExample()
+		fmt.Println("place_order_id:", *order_id)
+		t1 := time.Now() //获取本地现在时间
+		t_temp = t1
+		examples.CancelOrderExample(order_id, t_temp)
+		time.Sleep(time.Second * 10)
 
-	t1 := time.Now() //获取本地现在时间
-	t_temp = t1
-	examples.CancelOrderExample(order_id, &t_temp)
-	time.Sleep(time.Second * 20)
+		fmt.Println("==================================================================================================")
+	}
 
 	//cancel_status := false
 
