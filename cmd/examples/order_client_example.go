@@ -98,7 +98,7 @@ func CancelOrderExample(order_id *string, t1 time.Time, file12 *os.File) {
 		d1 := t2.Sub(t1)
 		fmt.Println("t2-t1=", d1)
 
-		str0 := []byte(t_cancel.Format("15:04:05.000"))
+		str0 := []byte(t_cancel.Local().Format("15:04:05.000"))
 		str1 := []byte(*order_id)
 		str2 := []byte(",")
 		str3 := []byte(d1.String())

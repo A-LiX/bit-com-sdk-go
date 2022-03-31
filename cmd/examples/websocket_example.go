@@ -123,7 +123,7 @@ func responseHandlerExample(resp interface{}) {
 					d2 := t3.Sub(*t_cancel)
 					fmt.Println("t3-t1=", d2)
 
-					str0 := []byte(t_cancel.Format("15:04:05.000"))
+					str0 := []byte(t_cancel.Local().Format("15:04:05.000"))
 					str1 := []byte(*oid)
 					str2 := []byte(",")
 					str3 := []byte(d2.String())
