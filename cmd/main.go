@@ -55,6 +55,9 @@ func main() {
 	defer file13.Close()
 
 	var t_temp time.Time
+
+	t_temp = time.Now()
+
 	var order_id *string
 	oid := "000000000"
 	order_id = &oid
@@ -72,22 +75,6 @@ func main() {
 		fmt.Println("==================================================================================================")
 	}
 
-	//cancel_status := false
-
-	// go func() {
-	// 	for {
-	//order_id := "123456789"
-	//_ = examples.GetOrdersExample(order_id)
-	// 		if cancel_status == true {
-	// 			t3 := time.Now()
-	// 			d2 := t3.Sub(t1)
-	// 			fmt.Println("t3-t1=", d2)
-	// 			break
-	// 		} else {
-	// 			fmt.Println(order_id, " cancel operation uncomplete")
-	// 		}
-	// 	}
-	// }()
 	//examples.AmendOrderExample()
 	//examples.AmendBatchOrdersExample()
 	//examples.ClosePositionsExample()

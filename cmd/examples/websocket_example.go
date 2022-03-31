@@ -123,14 +123,22 @@ func responseHandlerExample(resp interface{}) {
 					d2 := t3.Sub(*t_cancel)
 					fmt.Println("t3-t1=", d2)
 
+					str0 := []byte(t_cancel.Format("15:04:05.000"))
 					str1 := []byte(*oid)
 					str2 := []byte(",")
 					str3 := []byte(d2.String())
 					str4 := []byte("\n")
-					str1 = append(str1, str2...)
-					str1 = append(str1, str3...)
-					str1 = append(str1, str4...)
-					_, _ = f13.Write([]byte(str1))
+
+					str0 = append(str0, str2...)
+					str0 = append(str0, str1...)
+					str0 = append(str0, str2...)
+					str0 = append(str0, str3...)
+					str0 = append(str0, str4...)
+
+					_, err := f13.Write([]byte(str0))
+					if err == nil {
+						fmt.Printf("writed to file13: %s\n", str0)
+					}
 					break
 				}
 			}

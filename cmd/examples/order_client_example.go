@@ -15,46 +15,12 @@ import (
 	"github.com/tidwall/pretty"
 )
 
-type Jinfo struct {
-	order_id         string
-	created_at       string
-	updated_at       string
-	user_id          string
-	instrument_id    string
-	order_type       string
-	side             string
-	price            string
-	qty              string
-	time_in_force    string
-	avg_price        string
-	filled_qty       string
-	status           string
-	fee              string
-	is_liquidation   string
-	auto_price       string
-	auto_price_type  string
-	pnl              string
-	cash_flow        string
-	initial_margin   string
-	taker_fee_rate   string
-	maker_fee_rate   string
-	label            string
-	stop_order_id    string
-	stop_price       string
-	reduce_only      string
-	post_only        string
-	reject_post_only string
-	mmp              string
-	source           string
-	hidden           string
-}
-
 func PlaceNewOrderExample() string {
 	orderClient := new(restclient.OrderClient).Init(config.User1Host, config.User1AccessKey, config.User1SecretKey)
 
 	paramMap := make(map[string]interface{})
 	paramMap["instrument_id"] = "BTC-PERPETUAL"
-	paramMap["qty"] = "1000"
+	paramMap["qty"] = "10"
 	paramMap["side"] = "sell"
 	paramMap["price"] = "55000.00"
 	paramMap["order_type"] = "limit"
@@ -131,15 +97,23 @@ func CancelOrderExample(order_id *string, t1 time.Time, file12 *os.File) {
 		t2 := time.Now()
 		d1 := t2.Sub(t1)
 		fmt.Println("t2-t1=", d1)
-		str1 := []byte(*order_id)
 
+		str0 := []byte(t_cancel.Format("15:04:05.000"))
+		str1 := []byte(*order_id)
 		str2 := []byte(",")
 		str3 := []byte(d1.String())
 		str4 := []byte("\n")
-		str1 = append(str1, str2...)
-		str1 = append(str1, str3...)
-		str1 = append(str1, str4...)
-		_, _ = file12.Write([]byte(str1))
+
+		str0 = append(str0, str2...)
+		str0 = append(str0, str1...)
+		str0 = append(str0, str2...)
+		str0 = append(str0, str3...)
+		str0 = append(str0, str4...)
+
+		_, err = file12.Write([]byte(str0))
+		if err == nil {
+			fmt.Printf("writed to file12: %s\n", str0)
+		}
 
 		respJson, jsonErr := model.ToJson(resp.Data)
 		if jsonErr != nil {
