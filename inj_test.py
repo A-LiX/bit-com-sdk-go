@@ -332,38 +332,37 @@ class InjectiveperpetualApi():
 
 if __name__ == '__main__':
 
-    file = open('./log.csv','w', encoding='utf-8')
-    csv_writer = csv.writer(file)
-    for i in range(1,1001):
-        inj =InjectiveperpetualApi(
-            
-            fee_recipient='inj18ul3vv8lk6zkv34wx4pja27sdmguewhll622m6')
-        batch_update_func = inj.batch_update(
-            # spot_orders_to_cancel=[OrderInfoParam('0x3e166ee0adfa72745de75a34a386d898c890efaea7e4798e911400a752a085c0',None,'INJ_USDT')],
-            # derivative_orders_to_cancel=[
-            #     OrderInfoParam('0x03423821063f997df5c74f3a842fb0178ac595a1d41aa1209a7f064f789da9f9',None,'BTC_USDT_SWAP'),
-            #     OrderInfoParam('0xfb114412a2746fba37c812326eedc1c6818ae2a89fb08896aab8ee8b3d0ba451',None,'BTC_USDT_SWAP'),
-            # ],
-            spot_orders_to_create=[TradeLimitParam(3.0, 0.02, "INJ_USDT", client_order_id=None, side='buy')],
-            derivative_orders_to_create=[
-                TradeLimitParam(49500, 0.0001, "BTC_USDT_SWAP", client_order_id=None, side='sell'),
-                TradeLimitParam(49600, 0.0001, "BTC_USDT_SWAP", client_order_id=None, side='sell'),
-            ],
-            spot_market_ids_to_cancel_all=[OrderInfoParam('0x95c7c6459a00e6683f55119987fb02a92e5905a1182f533944a47f4bba9368e1',None,'INJ_USDT')],
-            derivative_market_ids_to_cancel_all=[OrderInfoParam('0x9569b6a05aa09c44da8947618a2d46fba1063c83d837133d6ff26f9298bcccdd',None,'BTC_USDT_SWAP')],
-        )
-        loop = asyncio.get_event_loop() or asyncio.new_event_loop()
-        # loop = asyncio.new_event_loop()
- 
-        start_time = datetime.datetime.now()
-        loop.run_until_complete(batch_update_func)
-        end_time = datetime.datetime.now()
-        delta = end_time - start_time
-        delta_gmtime = time.gmtime(delta.total_seconds())
-        duration_str = time.strftime("%S", delta_gmtime)
-        print ("duration:", duration_str)
-        csv_writer.writerow([duration_str])
-        #i += 1
+    with open('./log.csv','w') as file:
+#    file = open('./log.csv','w')
+        for i in range(1,1001):
+            inj =InjectiveperpetualApi(
+               
+                fee_recipient='inj18ul3vv8lk6zkv34wx4pja27sdmguewhll622m6')
+            batch_update_func = inj.batch_update(
+                # spot_orders_to_cancel=[OrderInfoParam('0x3e166ee0adfa72745de75a34a386d898c890efaea7e4798e911400a752a085c0',None,'INJ_USDT')],
+                # derivative_orders_to_cancel=[
+                #     OrderInfoParam('0x03423821063f997df5c74f3a842fb0178ac595a1d41aa1209a7f064f789da9f9',None,'BTC_USDT_SWAP'),
+                #     OrderInfoParam('0xfb114412a2746fba37c812326eedc1c6818ae2a89fb08896aab8ee8b3d0ba451',None,'BTC_USDT_SWAP'),
+                # ],
+                spot_orders_to_create=[TradeLimitParam(3.0, 0.02, "INJ_USDT", client_order_id=None, side='buy')],
+                derivative_orders_to_create=[
+                    TradeLimitParam(49500, 0.0001, "BTC_USDT_SWAP", client_order_id=None, side='sell'),
+                    TradeLimitParam(49600, 0.0001, "BTC_USDT_SWAP", client_order_id=None, side='sell'),
+                ],
+                spot_market_ids_to_cancel_all=[OrderInfoParam('0x95c7c6459a00e6683f55119987fb02a92e5905a1182f533944a47f4bba9368e1',None,'INJ_USDT')],
+                derivative_market_ids_to_cancel_all=[OrderInfoParam('0x9569b6a05aa09c44da8947618a2d46fba1063c83d837133d6ff26f9298bcccdd',None,'BTC_USDT_SWAP')],
+            )
+            loop = asyncio.get_event_loop() or asyncio.new_event_loop()
+            # loop = asyncio.new_event_loop()
+    
+        
+            start = time.time()
+            loop.run_until_complete(batch_update_func)
+            end = time.time()
+            print (end-start)
+            s= '%s' %(end-start)
+            file.write(s+'\n')
+            #i += 1
     file.close()
 
 
